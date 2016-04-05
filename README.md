@@ -1,3 +1,14 @@
+# Dropdot - simple version #
+This is a great example of how to load files directly from a browser to AWS S3.
+It is forked from the original at https://github.com/alfg/dropdot
+
+My modifications:
+ * Modify the code to work with Express 4.x
+ * Hide the native browser "choose file" UI and replace by delegating a click event 
+ * Remove all dependencies and UI stuff so that only a minimal working example remains 
+
+Below is the original documentation - It's perfect so I'll leave it as is ...
+
 # Dropdot #
 
 Dropdot is a simple file uploader built on NodeJS, Express and S3 API as the object storage platform.
