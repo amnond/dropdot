@@ -1,10 +1,19 @@
+function resetLog() {
+  $('#log').html('');
+}
+
+function addLog(log) {
+  var objLog = $('#log');
+  objLog.html(objLog.html()+'<br />'+log);
+}
+
 $(function() {
 
   $('.direct-upload').each(function() {
     /* For each file selected, process and upload */
 
     var form = $(this)
-
+    resetLog();
     $(this).fileupload({
       url: form.attr('action'), // Grabs form's action src
       type: 'POST',
@@ -15,7 +24,7 @@ $(function() {
           url: "/signed",
           type: 'GET',
           dataType: 'json',
-          data: {title: data.files[0].name}, // Send filename to /signed for the signed response 
+          data: {title: data.files[0].name}, // Send filename to /signed for the signed response
           async: false,
           success: function(data) {
             // Now that we have our data, we update the form so it contains all
@@ -27,41 +36,44 @@ $(function() {
           }
         })
         data.submit();
+        addLog('submitted')
       },
       send: function(e, data) {
-        $('.progress').fadeIn(); // Display widget progress bar
+        addLog('send');
       },
       progress: function(e, data){
-        $('#circle').addClass('animate'); // Animate the rotating circle when in progress
         var percent = Math.round((e.loaded / e.total) * 100)
-        $('.meter').css('width', percent + '%') // Update progress bar percentage
+        addLog('progress:'+percent+'%');
       },
       fail: function(e, data) {
-        console.log('fail')
-        $('#circle').removeClass('animate');
+        addLog('fail')
       },
       success: function(data) {
         var url = $(data).find('Location').text(); // Find location value from XML response
         $('.share-url').show(); // Show input
-        $('.share-url').val(url.replace("%2F", "/")); // Update the input with url address 
+        $('.share-url').val(url.replace("%2F", "/")); // Update the input with url address
+        addLog('success');
       },
       done: function (event, data) {
         // When upload is done, fade out progress bar and reset to 0
-        $('.progress').fadeOut(300, function() {
-          $('.bar').css('width', 0)
-        })
+        addLog('done');
 
-        // Stop circle animation
-        $('#circle').removeClass('animate');
       },
     })
   })
+
+
+  function openFileDialog() {
+    var evt = new MouseEvent('click');
+    document.getElementById('idAddFile').dispatchEvent(evt);
+  };
+
+  document.getElementById('drop').addEventListener('click', openFileDialog, false);
 
   /* Dragover Events on circle */
   var dragging = 0; //Get around chrome bug
   $('#drop').on("dragenter", function(e){
       dragging++;
-      $('#drop').addClass("gloss");
       e.preventDefault();
       return false;
   });
@@ -75,7 +87,6 @@ $(function() {
   $('#drop').on("dragleave", function(e){
       dragging--;
       if (dragging === 0) {
-        $('#drop').removeClass("gloss");
       }
       e.preventDefault();
       return false;
@@ -98,6 +109,6 @@ $(function() {
         return false;
   });
 });
- 
+
 })
 
